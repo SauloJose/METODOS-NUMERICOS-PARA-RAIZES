@@ -1,50 +1,60 @@
-
-%Método do meio intervalo - Erro
-
+%Método do meio intevalo
 function [yy, ea, X] = MIE(x0,x1,itmax,e)
-  f=@(x) x^2-7*x+12;
+  %iteração 0
+
+  %observar quando a raiz está em um dos extremos do intervalo
   xl=x0;
   xu=x1;
-  fu=f(xu);
   fl=f(xl);
-  areal=-0.41468941;
-  xr=(xl+xu)/2;
-  fr=f(xr);
-  err=e;
+  fu=f(xu);
 
-  ea=abs(x1-x0)/abs(x1);
-  emaj=abs((x1-x0)/2^0);
-  erel=abs((xr-areal)/xr);
+  x(1)=(xl+xu)/2;
+  fr=f(x(1));
+
   it=1;
+  erro=e;
+
+  %erros
+  ea(it)=abs(x1-x0)/abs(x1); %erro estimado
 
   do
-    it=it+1;
-    xrold=xr;
     teste=fr*fl;
+    it=it+1;
 
-    if teste<0
-      xu=xr;
+    if teste <0
+      xu=x(it-1);
       fu=f(xu);
     elseif teste>0
-      xl=xr;
+      xl=x(it-1);
       fl=f(xl);
     else
-      yy=xr;
-      break;
+      yy=x(it-1);
+      it=it-1;
+      break
     endif
-    xr=xu-fu*(xl-xu)/(fl-fu);
-    fr=f(xr);
+    x(it)=(xl+xu)/2;
+    fr=f(x(it));
 
     %calculando erros
-    ea(it)=abs((xr-xrold)/xr);
-    erel(it)=abs((xr-areal)/xr);
-    emaj(it)=abs((x1-x0)/2^it);
-  until ea(it) < err || it>=itmax
+    ea(it)=abs((x(it)-x(it-1))/x(it));
 
-  X=1:1:it;
-  plot(X,ea," - o ");
-  title('Gráfico de erros em função das iterações');
-  xlabel('Iterações');
-  ylabel('Erro relativo');
+   until ea(it) < erro || it >= itmax
+
+%Imrpimindo gráfico
+  X=1:1:(it);
+  Y=1:1:(it);
+  subplot(2,1,1);
+  plot(Y,x,"-*");
+  title("Aproximação da raiz em cada iteração");
+  xlabel('Iteração');
+  ylabel("Valor da iteração")
   grid();
-  yy=xr;
+  subplot(2,1,2);
+  plot(X,ea,"-*");
+  title('Gráfico de erros em função das iterações')
+  xlabel('Iteração')
+  ylabel("Erro relativo")
+  grid();
+  yy=x(it);
+  it
+endfunction

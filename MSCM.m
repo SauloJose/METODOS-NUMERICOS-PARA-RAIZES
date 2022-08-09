@@ -1,11 +1,12 @@
-  %Método de Newton-Rapson
-function [yy,ea,X]=MNR(x0,itmax,err)
+%Método da secante modificado MSCM()
+function yy=MSCM(x0,pert,itmax,err)
   x(1)=x0; %inicializo o vetor
   erro=err; %constante de erro
   iterMax=itmax; %Número máximo de iterações
+  d=pert; %pertubação
   % Funções utilizadas para esse método
-  g=@(x) (x/12)*cosh(600/x)-x/12-9;
-  dg=@(x) (1/12)*cosh(600/x)-sinh(600/x)*(50/x)-1/12;
+  g=@(x) f(x);
+  dg=@(x) (f(x+d*x)-f(x))/d;
   it=1;
   do
     it=it+1;
@@ -17,14 +18,15 @@ function [yy,ea,X]=MNR(x0,itmax,err)
   subplot(2,1,1);
   plot(Y,x,"-*");
   title("Aproximação da raiz em cada iteração");
-  xlabel('iteraçoes -1')
+  xlabel('Iteração')
   ylabel("Valor da iteração")
-  grid()
+    grid();
   subplot(2,1,2);
   plot(X,ea,"-*");
   title('Gráfico de erros em função das iterações')
-  xlabel('iteraçoes de erro')
+  xlabel('Iteração')
   ylabel("Erro relativo")
   grid()
   yy=x(it);
+
 endfunction
